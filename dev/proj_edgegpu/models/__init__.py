@@ -104,7 +104,7 @@ def get_cifar_models(config, extra_path=None):
       genotype = config.genotype
       if extra_path is not None:  # reload genotype by extra_path
         if not osp.isfile(extra_path): raise ValueError('invalid extra_path : {:}'.format(extra_path))
-        xdata = torch.load(extra_path)
+        xdata = torch.load(extra_path, weights_only=False)
         current_epoch = xdata['epoch']
         genotype = xdata['genotypes'][current_epoch-1]
       C = config.C if hasattr(config, 'C') else config.ichannel
@@ -188,7 +188,7 @@ def obtain_search_model(config):
 
 def load_net_from_checkpoint(checkpoint):
   assert osp.isfile(checkpoint), 'checkpoint {:} does not exist'.format(checkpoint)
-  checkpoint   = torch.load(checkpoint)
+  checkpoint   = torch.load(checkpoint, weights_only=False)
   model_config = dict2config(checkpoint['model-config'], None)
   model        = obtain_model(model_config)
   model.load_state_dict(checkpoint['base-model'])
